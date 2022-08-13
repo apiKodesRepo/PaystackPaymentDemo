@@ -3,7 +3,7 @@
 
 This is an open source implementation of paystack’s Api. 
 
-## AIM 
+## Aim 
 
 The aim is to help starters or junior devs implement paystack apis in different languages 
 
