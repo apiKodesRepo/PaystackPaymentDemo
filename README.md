@@ -32,7 +32,7 @@ The aim is to help starters or junior devs implement paystack apis in different 
 
 *Note: All implementations are the implementor’s method of using paystack’s api libraries*
 
-Documentation url: [Documentation url:] (https://paystack.com/docs/)
+Documentation url: (https://paystack.com/docs/)
 
-Library url: [Library url]: (https://paystack.com/docs/libraries-and-plugins/libraries/) 
+Library url:  (https://paystack.com/docs/libraries-and-plugins/libraries/) 
 
