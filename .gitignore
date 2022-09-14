@@ -1,0 +1,3 @@
+/paystack_transfers/.gitignore
+/paystack_transfers/vendor
+/.env
