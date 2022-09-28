@@ -5,62 +5,64 @@ $all_banks = getAllBanks();
 
 $decode_all_banks_data = json_decode($all_banks);
 
-// echo var_dump($decode_all_banks_data->data[0]);
+if(isset($_POST['make_transfer_btn'])){
+    if (
+        isset($_POST['name'])
+        && isset($_POST['account_number']) && isset($_POST['banks'])
+        && isset($_POST['reason'])
+    ) {
+    
+        $name = $_POST['name'];
+        $account_number = $_POST['account_number'];
+        $amount = $_POST['amount'];
+        $reason = $_POST['reason'];
+        $type = "nuban";
+        $bank_code = $_POST['banks'];
+        $currency = "NGN";
+    
+        $data = [
+            'type' => $type,
+            'name' => $name,
+            'account_number' => $account_number,
+            'bank_code' => $bank_code,
+            'currency' => $currency
+        ];
+    
+        $trans_recipient_data = createTransferRecipient($data);
+    
+        // {"status":true,"message":"Transfer recipient created successfully","data":
+        //     {"active":true,"createdAt":"2022-09-14T12:29:30.219Z","currency":"NGN",
+        //         "domain":"test","id":38640961,"integration":827676,"name":"Chinonso Kalu",
+        //             "recipient_code":"RCP_wa4y0ei5ojtkycf","type":"nuban","updatedAt":"2022-09-14T12:29:30.219Z",
+        //                 "is_deleted":false,"isDeleted":false,
+        //                     "details":{"authorization_code":null,"account_number":"0693858447",
+        //                         "account_name":"CHINONSO JOHN KALU","bank_code":"044","bank_name":"Access Bank"}}}
+    
+        $decode_transfer_recipient_data = json_decode($trans_recipient_data);
 
-if (
-    isset($_POST['name'])
-    && isset($_POST['account_number']) && isset($_POST['banks'])
-    && isset($_POST['reason'])
-) {
+        echo var_dump($decode_transfer_recipient_data);
+    
+        $recipient_code = $decode_transfer_recipient_data->data->recipient_code;
+    
+        $field_data = [
+            'source' => "balance",
+            'amount' => $amount,
+            'recipient_code' => $recipient_code,
+            'reason' => $reason
+        ];
+    
+        // now we can
 
-    $name = $_POST['name'];
-    $account_number = $_POST['account_number'];
-    $amount = $_POST['amount'];
-    $reason = $_POST['reason'];
-    $type = "nuban";
-    $bank_code = $_POST['banks'];
-    $currency = "NGN";
+        $transfer_error_message = "";
 
-    $data = [
-        'type' => $type,
-        'name' => $name,
-        'account_number' => $account_number,
-        'bank_code' => $bank_code,
-        'currency' => $currency
-    ];
-
-    $trans_recipient_data = createTransferRecipient($data);
-
-    // {"status":true,"message":"Transfer recipient created successfully","data":
-    //     {"active":true,"createdAt":"2022-09-14T12:29:30.219Z","currency":"NGN",
-    //         "domain":"test","id":38640961,"integration":827676,"name":"Chinonso Kalu",
-    //             "recipient_code":"RCP_wa4y0ei5ojtkycf","type":"nuban","updatedAt":"2022-09-14T12:29:30.219Z",
-    //                 "is_deleted":false,"isDeleted":false,
-    //                     "details":{"authorization_code":null,"account_number":"0693858447",
-    //                         "account_name":"CHINONSO JOHN KALU","bank_code":"044","bank_name":"Access Bank"}}}
-
-    $decode_transfer_recipient_data = json_decode($trans_recipient_data);
-
-    $recipient_code = $decode_transfer_recipient_data->data->recipient_code;
-
-    $field_data = [
-        'source' => "balance",
-        'amount' => $amount,
-        'recipient_code' => $recipient_code,
-        'reason' => $reason
-    ];
-
-    $initiate_transfer = json_decode(initiate_transfer($field_data));
-
-
-    // now we can 
-
-    if ($initiate_transfer->status === false) {
-        $transfer_error_message = $initiate_transfer->message;
+        if ($initiate_transfer->status === false) {
+            $transfer_error_message = $initiate_transfer->message;
+        }
+    
+        // echo $transfer_error_message;
     }
-
-    // echo $transfer_error_message;
 }
+
 ?>
 
 <!doctype html>
@@ -85,7 +87,7 @@ if (
 
                 <div class="">
                     <?php
-                    if ($transfer_error_message) {
+                    if (isset($transfer_error_message)) {
                     ?>
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             <?=$transfer_error_message?>
@@ -135,7 +137,7 @@ if (
                             <textarea name="reason" class="form-control" placeholder="Enter Reason for Transfer"></textarea>
                         </div>
                         <div class="form-submit">
-                            <button class="btn btn-primary" name="make_payment_btn" type="submit"> Pay </button>
+                            <button class="btn btn-primary" name="make_transfer_btn" type="submit"> Pay </button>
                         </div>
                     </form>
                 </div>
